@@ -81,7 +81,8 @@ export default function Home() {
 
   return (
     <>
-      <Header query={query} setQuery={setQuery} onSearch={onSearch} />
+<Header query={query} setQuery={setQuery} onSearch={onSearch} />
+
 
       {/* Хедер теперь sticky и фиксированный (h-16 / md:h-20),
           поэтому контенту даём верхний отступ, чтобы не залезал под него */}

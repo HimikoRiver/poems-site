@@ -10,28 +10,6 @@ function firstNonEmptyLine(lines) {
   return "";
 }
 
-/**
- * Убирает “мусорные” табы/пробелы в начале строк.
- * Типичный кейс: каждая строка начинается с \t или с нескольких пробелов из исходника.
- *
- * Правило:
- * - Для каждой НЕпустой строки удаляем:
- *   - один ведущий таб (\t)
- *   - или до 8 пробелов в начале
- */
-function stripLeadingIndentPerLine(text) {
-  const normalized = text.replace(/\r\n/g, "\n");
-  const lines = normalized.split("\n");
-
-  const cleaned = lines.map((line) => {
-    if (!line.trim().length) return line; // пустые строки не трогаем
-    // 1 таб ИЛИ до 8 пробелов
-    return line.replace(/^(\t| {1,8})/, "");
-  });
-
-  return cleaned.join("\n");
-}
-
 export async function GET() {
   const dir = path.join(process.cwd(), "public", "poems", "items");
 
@@ -42,33 +20,37 @@ export async function GET() {
     );
   }
 
-  const files = fs
-    .readdirSync(dir)
-    .filter((name) => name.toLowerCase().endsWith(".md"))
-    .sort()
-    .reverse();
+const files = fs
+  .readdirSync(dir)
+  .filter((name) => name.toLowerCase().endsWith(".md"))
+  .sort()
+  .reverse();
 
   const poems = files.map((filename) => {
     const id = filename.replace(/\.md$/i, "");
     const fullPath = path.join(dir, filename);
 
     const raw = fs.readFileSync(fullPath, "utf8");
-    const normalizedRaw = raw.replace(/\r\n/g, "\n");
-    const lines = normalizedRaw.split("\n");
+
+    // Сохраняем переносы как есть, но приводим к \n (на Windows может быть \r\n)
+    const normalized = raw.replace(/\r\n/g, "\n");
+
+    const lines = normalized.split("\n");
 
     const title = firstNonEmptyLine(lines) || id;
 
-    // text = всё, кроме первой непустой строки (заголовка)
+    // text = всё, кроме первой непустой строки (и одного перевода строки после неё)
     let titleIndex = lines.findIndex((l) => l.trim().length > 0);
     if (titleIndex === -1) titleIndex = 0;
 
     const rest = lines.slice(titleIndex + 1);
 
-    // убираем пустые строки сразу после заголовка
+    // если сразу после заголовка идут пустые строки — оставляем структуру,
+    // но чтобы не было “пустой страницы”, уберём только самый первый пустой блок
+    // (НЕ трогаем содержимое стихов, только стартовую “дырку”)
     while (rest.length && rest[0].trim() === "") rest.shift();
 
-    // склеиваем и чистим “табовый мусор”
-    const text = stripLeadingIndentPerLine(rest.join("\n")).trimEnd();
+    const text = rest.join("\n").trimEnd();
 
     return { id, title, text };
   });

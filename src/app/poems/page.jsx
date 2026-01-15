@@ -1,21 +1,27 @@
-"use client";
+import fs from "fs";
+import path from "path";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
-import { useEffect, useState } from "react";
+export default function PoemPage({ params }) {
+  const { slug } = params;
+  const filePath = path.join(process.cwd(), "public", "poems", "items", `${slug}.md`);
 
-export default function PoemsPage() {
-  const [text, setText] = useState("Загружаю стихи...");
+  if (!fs.existsSync(filePath)) notFound();
 
-  useEffect(() => {
-    fetch("/poems/poems.md")
-      .then((res) => res.text())
-      .then((data) => setText(data))
-      .catch(() => setText("Не удалось загрузить стихи"));
-  }, []);
+  const text = fs.readFileSync(filePath, "utf8");
 
   return (
-    <div style={{ padding: "40px", maxWidth: "700px", margin: "0 auto" }}>
-      <h1>Стихи</h1>
-      <pre style={{ whiteSpace: "pre-wrap" }}>{text}</pre>
-    </div>
+    <section className="min-h-screen bg-neutral-950 text-neutral-100 px-4 md:px-8 py-10">
+      <div className="max-w-3xl mx-auto">
+        <Link href="/poems" className="text-sm text-neutral-400 hover:text-neutral-200">
+          ← Назад к списку
+        </Link>
+
+        <pre className="mt-8 whitespace-pre-wrap font-serif leading-relaxed text-lg">
+          {text}
+        </pre>
+      </div>
+    </section>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Header({ query, setQuery, onSearch }) {
   const hasSearch = typeof onSearch === "function";
@@ -26,12 +26,6 @@ export default function Header({ query, setQuery, onSearch }) {
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [menuOpen]);
-
-  const desktopGridCols = useMemo(() => {
-    return hasSearch
-      ? "grid-cols-[140px_1fr_360px]"
-      : "grid-cols-[140px_1fr]";
-  }, [hasSearch]);
 
   return (
     <header className="sticky top-0 z-50 h-24 md:h-28 shrink-0">
@@ -58,13 +52,8 @@ export default function Header({ query, setQuery, onSearch }) {
             </button>
           </div>
 
-          {/* DESKTOP */}
-          <div
-            className={[
-              "hidden md:grid w-full items-center gap-4",
-              desktopGridCols,
-            ].join(" ")}
-          >
+          {/* DESKTOP: всегда 3 колонки, даже если поиска нет */}
+          <div className="hidden md:grid w-full items-center gap-4 grid-cols-[140px_1fr_360px]">
             {/* ЛОГО */}
             <Link
               href="/"
@@ -73,8 +62,8 @@ export default function Header({ query, setQuery, onSearch }) {
               Vore ona
             </Link>
 
-            {/* НАВ */}
-            <nav className="flex justify-center gap-2 whitespace-nowrap">
+            {/* НАВ (всегда на одном месте) */}
+            <nav className="flex justify-center gap-6 whitespace-nowrap uppercase">
               <Link href="/" className="nav-btn nav-btn-2">
                 Главная
               </Link>
@@ -83,13 +72,12 @@ export default function Header({ query, setQuery, onSearch }) {
                 Об авторе
               </Link>
 
-              {/* ✅ ВМЕСТО #contacts — ведём на /contacts */}
               <Link href="/contacts" className="nav-btn nav-btn-2">
                 Контакты
               </Link>
             </nav>
 
-            {/* ПОИСК */}
+            {/* ПРАВО: либо поиск, либо пустая заглушка той же ширины */}
             {hasSearch ? (
               <form
                 className="flex justify-end gap-3"
@@ -111,7 +99,9 @@ export default function Header({ query, setQuery, onSearch }) {
                   Найти
                 </button>
               </form>
-            ) : null}
+            ) : (
+              <div className="h-[42px]" />
+            )}
           </div>
         </div>
       </div>
@@ -175,7 +165,6 @@ export default function Header({ query, setQuery, onSearch }) {
               ОБ АВТОРЕ
             </Link>
 
-            {/* ✅ ВМЕСТО #contacts — ведём на /contacts */}
             <Link
               href="/contacts"
               onClick={closeMenu}
