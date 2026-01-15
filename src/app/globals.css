@@ -56,3 +56,162 @@ body {
 ::selection {
   background: rgba(255, 255, 255, 0.15);
 }
+
+
+/* =========================
+   NAV LINKS (no background)
+   ========================= */
+
+.nav-btn {
+  position: relative;
+  display: inline-block;
+
+  /* НИКАКОГО фона и рамок */
+  background: transparent;
+  border: none;
+
+  padding: 0.25rem 0.1rem;
+  margin: 0 0.25rem;
+
+  color: rgba(226, 232, 240, 0.9);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-decoration: none;
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+
+/* убираем любые дефолтные hover-эффекты */
+.nav-btn:hover {
+  background: transparent;
+}
+
+/* =========================
+   ANIMATION (no layout shift)
+   ========================= */
+
+.nav-btn-2::before,
+.nav-btn-2::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 0%;
+  height: 1px;
+
+  background: rgba(255, 255, 255, 0.9);
+  opacity: 0.85;
+
+  transition: width 260ms ease;
+  pointer-events: none;
+}
+
+/* верхняя линия */
+.nav-btn-2::before {
+  top: -0.35rem;
+}
+
+/* нижняя линия */
+.nav-btn-2::after {
+  bottom: -0.35rem;
+}
+
+/* hover — ТОЛЬКО линии, НИЧЕГО НЕ ДВИГАЕТСЯ */
+.nav-btn-2:hover::before,
+.nav-btn-2:hover::after {
+  width: 100%;
+}
+
+/* лёгкое усиление цвета текста, без сдвигов */
+.nav-btn-2:hover {
+  color: rgba(255, 255, 255, 1);
+}
+
+/* =========================
+   SEARCHBOX — final
+   ========================= */
+
+.searchbox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+
+  width: 100%;
+  max-width: 220px;          /* ширина инпута */
+  background: rgba(0, 0, 0, 0.32);
+
+  border-radius: 0;          /* ты отключила — ок */
+  transition: background 220ms ease;
+}
+
+.searchbox:hover {
+  background: rgba(0, 0, 0, 0.42);
+}
+
+.searchbox__input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+
+  padding: 0.55rem 1.1rem;  /* ⬅️ здесь старт слова "Поиск" */
+  color: rgba(226, 232, 240, 0.92);
+  font-size: 0.875rem;
+}
+
+.searchbox__input::placeholder {
+  color: rgba(161, 161, 170, 0.65);
+}
+
+/* ===== ЛИНИИ = РЕАЛЬНЫЙ BORDER ===== */
+
+.searchbox-2::before,
+.searchbox-2::after {
+  content: "";
+  position: absolute;
+
+  left: 0;                  /* ⬅️ ДО КРАЯ */
+  right: 0;                 /* ⬅️ ДО КРАЯ */
+
+  height: 1px;
+  background: rgba(255, 255, 255, 0.9);
+
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: center;
+
+  transition: opacity 160ms ease, transform 220ms ease;
+  pointer-events: none;
+}
+
+.searchbox-2::before {
+  top: 0;
+}
+
+.searchbox-2::after {
+  bottom: 0;
+}
+
+.searchbox-2:hover::before,
+.searchbox-2:hover::after,
+.searchbox-2:focus-within::before,
+.searchbox-2:focus-within::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.searchbox-2:focus-within {
+  background: rgba(0, 0, 0, 0.48);
+}
+
+
+/* HARD: выключаем радиусы везде */
+:root { --radius: 0px !important; }
+
+*,
+*::before,
+*::after { border-radius: 5px !important; }
+
+[class*="rounded"] { border-radius: 5px !important; }

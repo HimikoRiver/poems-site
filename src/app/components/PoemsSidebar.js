@@ -76,11 +76,15 @@ export default function PoemsSidebar({ poems, activeId, onSelect }) {
   };
 
   return (
-    <aside className="h-full">
-      <div className="h-full rounded-3xl border border-white/10 bg-black/30 backdrop-blur-md p-4 flex flex-col overflow-hidden">
+    <aside className="h-fit">
+      <div className="rounded-3xl border border-white/10 bg-black/30 backdrop-blur-md p-4 flex flex-col overflow-hidden">
         <p className="text-xs uppercase tracking-[0.2em] text-zinc-300/70">
           стихи
         </p>
+              
+                        <p className="mt-2 text-xs text-zinc-400/80">
+                          Всего стихов: {poems.length}
+                        </p>
 
         {/* 9 стихов, без скролла */}
         <div className="mt-3 space-y-2">
@@ -107,7 +111,6 @@ export default function PoemsSidebar({ poems, activeId, onSelect }) {
 
         {/* Пагинация внизу. ВАЖНО: не переносится и не вылезает */}
         <div className="mt-auto pt-4 border-t border-white/10 overflow-hidden -mx-4 px-4">
-
           <div className="flex items-center gap-3">
             {/* Prev */}
             <button
